@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import './input_widget.dart';
-import './register.dart';
+import './login.dart';
 import '../controller/authentication.dart';
 
-class Login extends StatelessWidget {
-  Login({Key? key}) : super(key: key);
-  final TextEditingController userNameController = TextEditingController();
+class Register extends StatelessWidget {
+  Register({Key? key}) : super(key: key);
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController userController = TextEditingController();
   final AuthenticationController authenticationController =
       Get.put(AuthenticationController());
 
@@ -19,11 +21,23 @@ class Login extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Login', style: TextStyle(fontSize: size * 0.08)),
+            Text('Register', style: TextStyle(fontSize: size * 0.08)),
             const SizedBox(height: 30),
             InputWidget(
+              hintText: 'Name',
+              controller: nameController,
+              obscureText: false,
+            ),
+            const SizedBox(height: 20),
+            InputWidget(
               hintText: 'UserName',
-              controller: userNameController,
+              controller: userController,
+              obscureText: false,
+            ),
+            const SizedBox(height: 20),
+            InputWidget(
+              hintText: 'Email',
+              controller: emailController,
               obscureText: false,
             ),
             const SizedBox(height: 20),
@@ -43,9 +57,11 @@ class Login extends StatelessWidget {
                   textStyle: const TextStyle(fontSize: 20),
                 ),
                 onPressed: () async {
-                  await authenticationController.login(
-                    username: userNameController.text.trim(),
+                  await authenticationController.register(
+                    email: emailController.text.trim(),
                     password: passwordController.text.trim(),
+                    name: nameController.text.trim(),
+                    username: userController.text.trim(),
                   );
                 },
                 child: Obx(() {
@@ -54,14 +70,14 @@ class Login extends StatelessWidget {
                           child: CircularProgressIndicator(
                           color: Colors.white,
                         ))
-                      : const Text('login');
+                      : const Text('Register');
                 })),
             const SizedBox(height: 20),
             TextButton(
                 onPressed: () {
-                  Get.to(() => Register());
+                  Get.to(() => Login());
                 },
-                child: Text('Register',
+                child: Text('Login',
                     style:
                         TextStyle(color: Colors.black, fontSize: size * 0.05)))
           ]),

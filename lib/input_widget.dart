@@ -26,7 +26,7 @@ class InputWidget extends StatelessWidget {
         decoration: InputDecoration(
             border: InputBorder.none,
             hintText: hintText,
-            contentPadding: EdgeInsets.symmetric(horizontal: 20)),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20)),
       ),
     );
   }
