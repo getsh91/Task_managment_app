@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_trio/widgets/postField.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:flutter_trio/widgets/post_data.dart';
+import '../controller/post_controller.dart';
+import 'package:get/get.dart';
+import '../widgets/postField.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+  final TextEditingController textController = TextEditingController();
+  final PostController postController = Get.put(PostController());
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -13,10 +21,68 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size.width;
 
-    return const Scaffold(
-      body: Center(
-        child: Text("Home Page"),
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'ForumApp',
+            style: TextStyle(
+              fontSize: size * 0.08,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.black,
+          elevation: 0,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PostFeild(
+                  hintText: 'What are u looking for?',
+                  controller: widget.textController,
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 10),
+                  ),
+                  child: Text('Post',
+                      style: TextStyle(
+                        fontSize: size * 0.04,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      )),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Obx(() {
+                  return widget.postController.isLoading.value
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: widget.postController.posts.value.length,
+                          itemBuilder: (context, index) {
+                            return PostData(
+                              post: widget.postController.posts.value[index],
+                            );
+                          },
+                        );
+                })
+              ],
+            ),
+          ),
+        ));
   }
 }
