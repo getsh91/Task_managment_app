@@ -20,6 +20,7 @@ class PostController extends GetxController {
 
   Future getAllPosts() async {
     try {
+      posts.value.clear();
       isLoading.value = true;
       var response = await http.get(Uri.parse('${url}feeds'), headers: {
         'Accept': 'application/json',
@@ -36,6 +37,41 @@ class PostController extends GetxController {
       }
     } catch (e) {
       isLoading.value = false;
+      print(e.toString());
+    }
+  }
+
+  Future createPost({
+    required String content,
+  }) async {
+    try {
+      // isLoading.value = true;
+      var data = {
+        'content': 'content',
+      };
+      var response = await http.post(
+        Uri.parse('${url}feed/store'),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${box.read('token')}',
+        },
+        body: data,
+      );
+      if (response.statusCode == 201) {
+        // isLoading.value = false;
+        print(json.decode(response.body));
+      } else {
+        // isLoading.value = false;
+        Get.snackbar(
+          'Error',
+          json.decode(response.body)['message'],
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+        );
+      }
+    } catch (e) {
+      // isLoading.value = false;
       print(e.toString());
     }
   }

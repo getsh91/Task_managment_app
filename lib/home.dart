@@ -47,20 +47,32 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 10),
-                  ),
-                  child: Text('Post',
-                      style: TextStyle(
-                        fontSize: size * 0.04,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      )),
-                ),
+                    onPressed: () async {
+                      await widget.postController.createPost(
+                          content: widget.textController.text.trim());
+                      widget.textController.clear();
+                      PostController().getAllPosts();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 10),
+                    ),
+                    child: Obx(() {
+                      return widget.postController.isLoading.value
+                          ? const Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : Text(
+                              'Post',
+                              style: TextStyle(
+                                fontSize: size * 0.05,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            );
+                    })),
                 const SizedBox(
                   height: 10,
                 ),

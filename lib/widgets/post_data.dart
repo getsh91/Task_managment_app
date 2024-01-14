@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_trio/model/post_model.dart';
+import 'package:get/get.dart';
+import '../post_details.dart';
 
 class PostData extends StatelessWidget {
   const PostData({super.key, required this.post});
@@ -59,7 +61,9 @@ class PostData extends StatelessWidget {
               width: 10,
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(() => PostDetails());
+              },
               icon: const Icon(Icons.message),
             ),
           ],
