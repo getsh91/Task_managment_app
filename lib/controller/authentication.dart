@@ -1,22 +1,23 @@
-import 'dart:math';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_trio/home.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../constant/constant.dart';
-import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import '../home.dart';
+import '../constant/constant.dart';
 
 class AuthenticationController extends GetxController {
   final isLoading = false.obs;
   final token = ''.obs;
+
   final box = GetStorage();
 
-  Future<void> register({
-    required String email,
-    required String password,
+  Future register({
     required String name,
     required String username,
+    required String email,
+    required String password,
   }) async {
     try {
       isLoading.value = true;
@@ -26,36 +27,41 @@ class AuthenticationController extends GetxController {
         'email': email,
         'password': password,
       };
+
       var response = await http.post(
-        Uri.parse(url + 'register'),
+        Uri.parse('${url}register'),
         headers: {
           'Accept': 'application/json',
         },
         body: data,
       );
+
       if (response.statusCode == 201) {
         isLoading.value = false;
         token.value = json.decode(response.body)['token'];
         box.write('token', token.value);
+        Get.offAll(() => const HomePage());
       } else {
         isLoading.value = false;
         Get.snackbar(
           'Error',
           json.decode(response.body)['message'],
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
         );
+        print(json.decode(response.body));
       }
     } catch (e) {
       isLoading.value = false;
+
       print(e.toString());
     }
   }
 
-  Future<void> login({
-    required String password,
+  Future login({
     required String username,
+    required String password,
   }) async {
     try {
       isLoading.value = true;
@@ -63,30 +69,34 @@ class AuthenticationController extends GetxController {
         'username': username,
         'password': password,
       };
+
       var response = await http.post(
-        Uri.parse(url + 'login'),
+        Uri.parse('${url}login'),
         headers: {
           'Accept': 'application/json',
         },
         body: data,
       );
+
       if (response.statusCode == 200) {
         isLoading.value = false;
         token.value = json.decode(response.body)['token'];
         box.write('token', token.value);
-        Get.offAll(() => HomePage());
+        Get.offAll(() => const HomePage());
       } else {
         isLoading.value = false;
         Get.snackbar(
           'Error',
           json.decode(response.body)['message'],
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM,
         );
+        print(json.decode(response.body));
       }
     } catch (e) {
       isLoading.value = false;
+
       print(e.toString());
     }
   }

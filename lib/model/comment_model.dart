@@ -1,22 +1,66 @@
 // To parse this JSON data, do
 //
-//     final postModel = postModelFromJson(jsonString);
+//     final commentModel = commentModelFromJson(jsonString);
 
 import 'dart:convert';
 
-PostModel postModelFromJson(String str) => PostModel.fromJson(json.decode(str));
+CommentModel commentModelFromJson(String str) =>
+    CommentModel.fromJson(json.decode(str));
 
-String postModelToJson(PostModel data) => json.encode(data.toJson());
+String commentModelToJson(CommentModel data) => json.encode(data.toJson());
 
-class PostModel {
-  PostModel({
+class CommentModel {
+  CommentModel({
+    this.id,
+    this.userId,
+    this.feedId,
+    this.body,
+    this.createdAt,
+    this.updatedAt,
+    this.feed,
+    this.user,
+  });
+
+  int? id;
+  int? userId;
+  int? feedId;
+  String? body;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+  Feed? feed;
+  User? user;
+
+  factory CommentModel.fromJson(Map<String, dynamic> json) => CommentModel(
+        id: json["id"],
+        userId: json["user_id"],
+        feedId: json["feed_id"],
+        body: json["body"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        feed: Feed.fromJson(json["feed"]),
+        user: User.fromJson(json["user"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "user_id": userId,
+        "feed_id": feedId,
+        "body": body,
+        "created_at": createdAt!.toIso8601String(),
+        "updated_at": updatedAt!.toIso8601String(),
+        "feed": feed!.toJson(),
+        "user": user!.toJson(),
+      };
+}
+
+class Feed {
+  Feed({
     this.id,
     this.userId,
     this.content,
     this.createdAt,
     this.updatedAt,
     this.liked,
-    this.user,
   });
 
   int? id;
@@ -25,16 +69,14 @@ class PostModel {
   DateTime? createdAt;
   DateTime? updatedAt;
   bool? liked;
-  User? user;
 
-  factory PostModel.fromJson(Map<String, dynamic> json) => PostModel(
+  factory Feed.fromJson(Map<String, dynamic> json) => Feed(
         id: json["id"],
         userId: json["user_id"],
         content: json["content"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         liked: json["liked"],
-        user: User.fromJson(json["user"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,7 +86,6 @@ class PostModel {
         "created_at": createdAt!.toIso8601String(),
         "updated_at": updatedAt!.toIso8601String(),
         "liked": liked,
-        "user": user!.toJson(),
       };
 }
 

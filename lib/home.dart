@@ -1,100 +1,100 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_trio/widgets/postField.dart';
+import 'package:flutter_trio/controller/post_controller.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:flutter_trio/widgets/post_data.dart';
-import '../controller/post_controller.dart';
-import 'package:get/get.dart';
-import '../widgets/postField.dart';
+import 'widgets/post_field.dart';
+import 'widgets/post_data.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
-  final TextEditingController textController = TextEditingController();
-  final PostController postController = Get.put(PostController());
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  final PostController _postController = Get.put(PostController());
+  final TextEditingController _textController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size.width;
-
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'ForumApp',
-            style: TextStyle(
-              fontSize: size * 0.08,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.black,
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+      appBar: AppBar(
+        title: const Text('Forum APP'),
+        backgroundColor: Colors.black,
+        elevation: 0,
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await _postController.getAllPosts();
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                PostFeild(
-                  hintText: 'What are u looking for?',
-                  controller: widget.textController,
+                PostFIeld(
+                  hintText: 'What do you want to ask?',
+                  controller: _textController,
                 ),
-                const SizedBox(height: 10),
+                // const SizedBox(
+                //   height: ,
+                // ),
                 ElevatedButton(
-                    onPressed: () async {
-                      await widget.postController.createPost(
-                          content: widget.textController.text.trim());
-                      widget.textController.clear();
-                      PostController().getAllPosts();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 10),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 10,
                     ),
-                    child: Obx(() {
-                      return widget.postController.isLoading.value
-                          ? const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : Text(
-                              'Post',
-                              style: TextStyle(
-                                fontSize: size * 0.05,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            );
-                    })),
+                  ),
+                  onPressed: () async {
+                    await _postController.createPost(
+                      content: _textController.text.trim(),
+                    );
+                    _textController.clear();
+                    _postController.getAllPosts();
+                  },
+                  child: Obx(() {
+                    return _postController.isLoading.value
+                        ? const CircularProgressIndicator()
+                        : const Text('Post');
+                  }),
+                ),
                 const SizedBox(
-                  height: 10,
+                  height: 30,
+                ),
+                const Text('Posts'),
+                const SizedBox(
+                  height: 20,
                 ),
                 Obx(() {
-                  return widget.postController.isLoading.value
+                  return _postController.isLoading.value
                       ? const Center(
                           child: CircularProgressIndicator(),
                         )
                       : ListView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: widget.postController.posts.value.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _postController.posts.value.length,
                           itemBuilder: (context, index) {
-                            return PostData(
-                              post: widget.postController.posts.value[index],
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              child: PostData(
+                                post: _postController.posts.value[index],
+                              ),
                             );
                           },
                         );
-                })
+                }),
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

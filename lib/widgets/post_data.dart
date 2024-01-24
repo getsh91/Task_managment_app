@@ -1,74 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_trio/controller/post_controller.dart';
 import 'package:flutter_trio/model/post_model.dart';
+import 'package:flutter_trio/post_details.dart';
 import 'package:get/get.dart';
-import '../post_details.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class PostData extends StatelessWidget {
-  const PostData({super.key, required this.post});
+class PostData extends StatefulWidget {
+  const PostData({
+    super.key,
+    required this.post,
+  });
 
   final PostModel post;
 
   @override
+  State<PostData> createState() => _PostDataState();
+}
+
+class _PostDataState extends State<PostData> {
+  final PostController _postController = Get.put(PostController());
+  bool likedPost = true;
+
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
     return Container(
-      width: double.infinity,
       padding: const EdgeInsets.all(10),
-      margin: EdgeInsets.symmetric(vertical: 10),
-      height: 200,
+      width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
         color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          post.user!.name!,
-          style: TextStyle(
-            fontSize: size * 0.05,
-            fontWeight: FontWeight.bold,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.post.user!.name!,
+            style: GoogleFonts.poppins(),
           ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Text(
-          post.user!.email!,
-          style: TextStyle(
-            fontSize: size * 0.04,
-            fontWeight: FontWeight.w400,
+          Text(
+            widget.post.user!.email!,
+            style: GoogleFonts.poppins(
+              fontSize: 10,
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Text(
-          post.content!,
-          style: TextStyle(
-            fontSize: size * 0.04,
-            fontWeight: FontWeight.w400,
+          const SizedBox(
+            height: 10,
           ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.thumb_up),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            IconButton(
-              onPressed: () {
-                Get.to(() => PostDetails());
-              },
-              icon: const Icon(Icons.message),
-            ),
-          ],
-        ),
-      ]),
+          Text(
+            widget.post.content!,
+          ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: () async {
+                  await _postController.likeAndDislike(widget.post.id);
+                  _postController.getAllPosts();
+                },
+                icon: Icon(
+                  Icons.thumb_up,
+                  color: widget.post.liked! ? Colors.blue : Colors.black,
+                ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Get.to(
+                    () => PostDetails(
+                      post: widget.post,
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.message),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

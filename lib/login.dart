@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_trio/controller/authentication.dart';
+import 'package:flutter_trio/input_widget.dart';
+import 'package:flutter_trio/register.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
-import './input_widget.dart';
-import './register.dart';
-import '../controller/authentication.dart';
 
-class Login extends StatelessWidget {
-  Login({Key? key}) : super(key: key);
-  final TextEditingController userNameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final AuthenticationController authenticationController =
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthenticationController _authenticationController =
       Get.put(AuthenticationController());
 
   @override
@@ -17,54 +24,82 @@ class Login extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Login', style: TextStyle(fontSize: size * 0.08)),
-            const SizedBox(height: 30),
-            InputWidget(
-              hintText: 'UserName',
-              controller: userNameController,
-              obscureText: false,
-            ),
-            const SizedBox(height: 20),
-            InputWidget(
-              hintText: 'Password',
-              controller: passwordController,
-              obscureText: true,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 20.0,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Login Page',
+                style: GoogleFonts.poppins(
+                  fontSize: size * 0.080,
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              InputWidget(
+                hintText: 'Username',
+                obscureText: false,
+                controller: _usernameController,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              InputWidget(
+                hintText: 'Password',
+                obscureText: true,
+                controller: _passwordController,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 15,
                   ),
-                  textStyle: const TextStyle(fontSize: 20),
                 ),
                 onPressed: () async {
-                  await authenticationController.login(
-                    username: userNameController.text.trim(),
-                    password: passwordController.text.trim(),
+                  await _authenticationController.login(
+                    username: _usernameController.text.trim(),
+                    password: _passwordController.text.trim(),
                   );
                 },
                 child: Obx(() {
-                  return authenticationController.isLoading.value
-                      ? const Center(
-                          child: CircularProgressIndicator(
+                  return _authenticationController.isLoading.value
+                      ? const CircularProgressIndicator(
                           color: Colors.white,
-                        ))
-                      : const Text('login');
-                })),
-            const SizedBox(height: 20),
-            TextButton(
+                        )
+                      : Text(
+                          'Login',
+                          style: GoogleFonts.poppins(
+                            fontSize: size * 0.040,
+                          ),
+                        );
+                }),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              TextButton(
                 onPressed: () {
-                  Get.to(() => Register());
+                  Get.to(() => const RegisterPage());
                 },
-                child: Text('Register',
-                    style:
-                        TextStyle(color: Colors.black, fontSize: size * 0.05)))
-          ]),
+                child: Text(
+                  'Register',
+                  style: GoogleFonts.poppins(
+                    fontSize: size * 0.040,
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
