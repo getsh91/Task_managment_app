@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_trio/controller/authentication.dart';
-import 'package:flutter_trio/input_widget.dart';
+import 'package:flutter_trio/widgets/input_widget.dart';
 import 'package:flutter_trio/register.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';

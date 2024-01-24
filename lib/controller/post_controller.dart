@@ -83,7 +83,7 @@ class PostController extends GetxController {
       isLoading.value = true;
 
       var response = await http.get(
-        Uri.parse('${url}feed/comments/$id'),
+        Uri.parse('${url}feed/getcomments/$id'),
         headers: {
           'Accept': 'application/json',
           'Authorization': 'Bearer ${box.read('token')}',

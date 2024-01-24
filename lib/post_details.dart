@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_trio/controller/post_controller.dart';
-import 'package:flutter_trio/input_widget.dart';
+import 'package:flutter_trio/widgets/input_widget.dart';
 import 'package:flutter_trio/model/post_model.dart';
 import 'package:get/get.dart';
 import 'widgets/post_data.dart';
